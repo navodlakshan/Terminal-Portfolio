@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navod Perera | Terminal Portfolio</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        /* style.css */
+        :root {
+            --primary: #71eb34;
+            --primary-light: #a1ff6b;
+            --secondary: #121212;
+            --text: #f0f0f0;
+            --text-light: #b0b0b0;
+            --bg: #000000;
+            --cursor: #71eb34;
+            --highlight: rgba(113, 235, 52, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+
+        @font-face {
+            font-family: 'Fira Code';
+            src: url('https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css');
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            padding: 30px;
+            min-height: 100vh;
+            background-image:
+                    radial-gradient(circle at 10% 20%, rgba(113, 235, 52, 0.05) 0%, transparent 20%),
+                    radial-gradient(circle at 90% 80%, rgba(113, 235, 52, 0.05) 0%, transparent 20%);
+        }
+
+        .terminal-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .author-header {
+            background-color: var(--secondary);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(122, 253, 53, 0.84);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .author-name {
+            color: var(--primary);
+            text-shadow: 2px 0px 2px rgba(122, 253, 53, 0.84);
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 5px;
+        }
+
+        .author-title {
+            color: var(--primary-light);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .author-bio {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .terminal {
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(122, 253, 53, 0.84);
+            background-color: var(--secondary);
+        }
+
+        .terminal-header {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--primary);
+            backdrop-filter: blur(5px);
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-right: 20px;
+        }
+
+        .terminal-button {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .terminal-button.close { background-color: #ff5f56; }
+        .terminal-button.minimize { background-color: #ffbd2e; }
+        .terminal-button.maximize { background-color: #27c93f; }
+
+        .terminal-button:hover {
+            transform: scale(1.1);
+        }
+
+        .terminal-title {
+            flex-grow: 1;
+            text-align: center;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .terminal-body {
+            padding: 25px;
+            height: 60vh;
+            overflow-y: auto;
+            font-size: 1.1rem;
+        }
+
+        .command-line {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .prompt {
+            color: var(--primary);
+            margin-right: 12px;
+            white-space: nowrap;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .command {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 1.1rem;
+            outline: none;
+            caret-color: var(--cursor);
+            padding: 5px 0;
+        }
+
+        .output {
+            margin-bottom: 25px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .output h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(113, 235, 52, 0.3);
+            padding-bottom: 5px;
+        }
+
+        .output p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .output ul, .output ol {
+            padding-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .output li {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .help-commands {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .command-name {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .command-desc {
+            color: var(--text-light);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .social-links a {
+            color: var(--primary);
+            font-size: 28px;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-light);
+            transform: translateY(-5px);
+        }
+
+        .project-item {
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: rgba(113, 235, 52, 0.05);
+            border-left: 3px solid var(--primary);
+            border-radius: 0 5px 5px 0;
+        }
+
+        .project-title {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .project-tech {
+            color: var(--primary-light);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .project-desc {
+            color: var(--text-light);
+        }
+
+        /* Animation */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 12px;
+            height: 22px;
+            background-color: var(--cursor);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .terminal-container {
+                gap: 20px;
+            }
+
+            .author-header {
+                padding: 20px;
+            }
+
+            .author-name {
+                font-size: 2rem;
+            }
+
+            .author-title {
+                font-size: 1.1rem;
+            }
+
+            .terminal-body {
+                padding: 20px;
+                height: 55vh;
+                font-size: 1rem;
+            }
+
+            .help-commands {
+                grid-template-columns: 120px 1fr;
+                gap: 10px;
+            }
+
+            .output h2 {
+                font-size: 1.3rem;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .author-header {
+                padding: 15px;
+            }
+
+            .author-name {
+                font-size: 1.8rem;
+            }
+
+            .terminal-body {
+                padding: 15px;
+                height: 50vh;
+            }
+
+            .help-commands {
+                grid-template-columns: 1fr;
+            }
+
+            .command-name {
+                margin-bottom: 5px;
+            }
+
+            .prompt, .command {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="terminal-container">
+    <div class="author-header">
+        <h1 class="author-name">Navod Perera</h1>
+        <h2 class="author-title">Software Engineer & UI/UX Designer</h2>
+        <p class="author-bio">
+            Passionate about creating elegant solutions to complex problems.
+            I specialize in full-stack development with a focus on user experience.
+            Currently pursuing my BICT (Hons) in Software Engineering at University of Ruhuna.
+        </p>
+    </div>
+
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-buttons">
+                <div class="terminal-button close"></div>
+                <div class="terminal-button minimize"></div>
+                <div class="terminal-button maximize"></div>
+            </div>
+            <div class="terminal-title">terminal-portfolio — bash — 100x30</div>
+        </div>
+        <div class="terminal-body" id="terminal-output">
+            <div class="output">Welcome to my interactive portfolio! Type <span class="command-name">help</span> to see available commands.</div>
+            <div class="output" id="command-history"></div>
+            <div class="command-line">
+                <span class="prompt">visitor@portfolio:~$</span>
+                <input type="text" class="command" id="command-input" autofocus>
+                <span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // script.js
+    document.addEventListener('DOMContentLoaded', () => {
+        const commandInput = document.getElementById('command-input');
+        const commandHistory = document.getElementById('command-history');
+        const terminalOutput = document.getElementById('terminal-output');
+
+        const commands = {
+            help: () => {
+                return `
+<h2>Available Commands</h2>
+<div class="help-commands">
+    <span class="command-name">help</span>
+    <span class="command-desc">Show this help message</span>
+    <span class="command-name">about</span>
+    <span class="command-desc">About me and my background</span>
+    <span class="command-name">skills</span>
+    <span class="command-desc">My technical skills and expertise</span>
+    <span class="command-name">projects</span>
+    <span class="command-desc">My notable projects</span>
+    <span class="command-name">experience</span>
+    <span class="command-desc">My professional experience</span>
+    <span class="command-name">contact</span>
+    <span class="command-desc">How to get in touch with me</span>
+    <span class="command-name">clear</span>
+    <span class="command-desc">Clear the terminal screen</span>
+</div>`;
+            },
+            about: () => {
+                return `
+<h2>About Navod Perera</h2>
+<p>I'm a software engineer specializing in web development and user experience design. With a passion for creating efficient, beautiful digital experiences, I bridge the gap between technology and design.</p>
+
+<p><strong>Education:</strong> BICT (Hons) Software Engineering at University of Ruhuna (2022-Present)</p>
+<p><strong>Location:</strong> Colombo, Sri Lanka</p>
+<p><strong>Interests:</strong> Web Technologies, UI/UX Design, Open Source, Technical Writing</p>
+
+<p>My approach combines technical expertise with creative problem-solving to deliver solutions that are both functional and delightful to use.</p>`;
+            },
+            skills: () => {
+                return `
+<h2>Technical Skills</h2>
+<ul>
+    <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript (ES6+), React.js, Angular, TypeScript</li>
+    <li><strong>Backend:</strong> Node.js, Python, Java, PHP, Express.js</li>
+    <li><strong>Databases:</strong> MySQL, MongoDB, PostgreSQL</li>
+    <li><strong>UI/UX:</strong> Figma, Adobe XD, User Research, Wireframing, Prototyping</li>
+    <li><strong>Tools:</strong> Git, Docker, VS Code, Postman, JIRA</li>
+    <li><strong>Methodologies:</strong> Agile, Scrum, Test-Driven Development</li>
+</ul>`;
+            },
+            projects: () => {
+                return `
+<h2>Featured Projects</h2>
+
+<div class="project-item">
+    <h3 class="project-title">HR & Inventory Management System</h3>
+    <p class="project-tech">Angular • TypeScript • Node.js • MySQL</p>
+    <p class="project-desc">Comprehensive solution for HR and inventory management with real-time analytics dashboard.</p>
+</div>
+
+<div class="project-item">
+    <h3 class="project-title">Point of Sale System</h3>
+    <p class="project-tech">React.js • Tailwind CSS • Express.js • MongoDB</p>
+    <p class="project-desc">Modern POS system for retail businesses with inventory tracking and sales reporting.</p>
+</div>
+
+<div class="project-item">
+    <h3 class="project-title">Personal Portfolio Website</h3>
+    <p class="project-tech">HTML5 • CSS3 • JavaScript • GSAP</p>
+    <p class="project-desc">Interactive portfolio showcasing my work with smooth animations and responsive design.</p>
+</div>`;
+            },
+            experience: () => {
+                return `
+<h2>Professional Experience</h2>
+
+<p><strong>Software Engineer Intern</strong> | Tech Solutions Lanka (2023-Present)</p>
+<ul>
+    <li>Develop and maintain web applications using React and Node.js</li>
+    <li>Collaborate with designers to implement responsive UIs</li>
+    <li>Optimize application performance and fix bugs</li>
+</ul>
+
+<p><strong>UI/UX Designer</strong> | Freelance (2021-2023)</p>
+<ul>
+    <li>Designed user interfaces for web and mobile applications</li>
+    <li>Conducted user research and created wireframes/prototypes</li>
+    <li>Worked with clients to refine product requirements</li>
+</ul>`;
+            },
+            contact: () => {
+                return `
+<h2>Contact Information</h2>
+<p>I'm always open to interesting opportunities and collaborations.</p>
+
+<ul>
+    <li><strong>Email:</strong> navodlakshanperera@gmail.com</li>
+    <li><strong>Phone:</strong> +94 758 189 134</li>
+    <li><strong>LinkedIn:</strong> linkedin.com/in/navod-lakshan-9949b1248/</li>
+    <li><strong>GitHub:</strong> github.com/navodlakshan</li>
+</ul>
+
+<div class="social-links">
+    <a href="https://www.linkedin.com/in/navod-lakshan-9949b1248/" target="_blank" title="LinkedIn"><i class='bx bxl-linkedin'></i></a>
+    <a href="https://github.com/navodlakshan" target="_blank" title="GitHub"><i class='bx bxl-github'></i></a>
+    <a href="https://twitter.com/NavodLaks6517" target="_blank" title="Twitter"><i class='bx bxl-twitter'></i></a>
+    <a href="https://www.instagram.com/lakshan.k49/" target="_blank" title="Instagram"><i class='bx bxl-instagram'></i></a>
+</div>`;
+            },
+            clear: () => {
+                commandHistory.innerHTML = '';
+                return '';
+            }
+        };
+
+        function processCommand(command) {
+            const cmd = command.trim().toLowerCase();
+            let output = '';
+
+            if (cmd === '') {
+                return '';
+            } else if (commands[cmd]) {
+                output = commands[cmd]();
+            } else {
+                output = `<p>Command not found: <span class="command-name">${cmd}</span>. Type <span class="command-name">help</span> for available commands.</p>`;
+            }
+
+            return output;
+        }
+
+        function addCommandToHistory(command, output) {
+            if (command) {
+                commandHistory.innerHTML += `
+                        <div class="output">
+                            <span class="prompt">visitor@portfolio:~$</span> ${command}
+                        </div>`;
+            }
+            if (output) {
+                commandHistory.innerHTML += `<div class="output">${output}</div>`;
+            }
+        }
+
+        commandInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = commandInput.value;
+                const output = processCommand(command);
+
+                addCommandToHistory(command, output);
+                commandInput.value = '';
+
+                // Scroll to bottom
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
+        });
+
+        // Initial help command
+        addCommandToHistory('', commands.help());
+    });
+</script>
+</body>
+</html>
